@@ -101,7 +101,7 @@ function b() {
     let cb = function (flag, record1) {
         //console.log("b-flag", flag)
         if (flag) {
-            testHttp.readFilex()
+            readFilex()
             console.log("======================停止===========================\n....\n...\n..\n.")
             clearInterval(timer)
         }
