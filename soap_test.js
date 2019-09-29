@@ -5,6 +5,7 @@ let pTimes = 0;
 let Temp = [];
 let flag = false;
 let Province
+var url = 'http://ws.webxml.com.cn/WebServices/WeatherWS.asmx?wsdl';
 
 function testHttp(cb) {
 
@@ -14,8 +15,9 @@ function testHttp(cb) {
 
     Province = Provinces[pTimes]
     console.log("Province: ", Province)
+    // var url = 'http://www.webxml.com.cn/WebServices/WeatherWebService.asmx?wsdl';
 
-    var url = 'http://www.webxml.com.cn/WebServices/WeatherWebService.asmx?wsdl';
+
     var args = {
         byProvinceName: Province
     };
@@ -23,31 +25,33 @@ function testHttp(cb) {
     pTimes++;
     //console.log("pTimes", pTimes)
     if (pTimes == 1) {
-        deleteFile()
+        //deleteFile()
     }
-    soap.createClient(url, function (err, client) {
-        if (err) {
-            console.log('createClient-err', err)
-        }
-        client.getSupportCity(args, function (err, result) {
-            if (err) {
-                console.log('getSupportCity-err', err);
+    switchFunction("getSupportCity",args, function(){});
 
-            } else {
-                //console.log("getSupportCity-result", result);
-                Temp = result.getSupportCityResult.string
-                //console.log("Temp", Temp)
-                writeFilex(Temp);
-                if (pTimes == 34) {
-                    flag = true;
-                    Temp = []
-                }
-                cb(flag)
-            }
+    // soap.createClient(url, function (err, client) {
+    //     if (err) {
+    //         console.log('createClient-err', err)
+    //     }
+    //     client.getSupportCity(args, function (err, result) {
+    //         if (err) {
+    //             console.log('getSupportCity-err', err);
 
-        });
+    //         } else {
+    //             //console.log("getSupportCity-result", result);
+    //             Temp = result.getSupportCityResult.string
+    //             //console.log("Temp", Temp)
+    //             writeFilex(Temp);
+    //             if (pTimes == 34) {
+    //                 flag = true;
+    //                 Temp = []
+    //             }
+    //             cb(flag)
+    //         }
 
-    });
+    //     });
+
+    // });
 
 }
 
@@ -62,7 +66,7 @@ function writeFilex(Temp) {
     //let options={encoding:'utf8', mode:'0666', flag}
 
     //fs.appendFile  writeFile
-    fs.appendFile('Provinces.txt', '\n' + Province + '\n' + Temp.toString() + '\n', function (err) {
+    fs.appendFile('C:/Users/dell/Desktop/io/Provinces.txt', '\n' + Province + '\n' + Temp.toString() + '\n', function (err) {
         if (err) {
             return console.error(err);
         }
@@ -75,7 +79,7 @@ function writeFilex(Temp) {
 
 function readFilex() {
     console.log("读取写入的数据！");
-    fs.readFile('Provinces.txt', function (err, data) {
+    fs.readFile('C:/Users/dell/Desktop/io/Provinces.txt', function (err, data) {
         if (err) {
             return console.error(err);
         }
@@ -85,13 +89,86 @@ function readFilex() {
 
 function deleteFile() {
     console.log("准备删除文件！");
-    fs.unlink('Provinces.txt', function (err) {
+    fs.unlink('C:/Users/dell/Desktop/io/Provinces.txt', function (err) {
         if (err) {
             return console.error(err);
         }
         console.log("文件删除成功！");
     });
 }
+/**    ------------------------------------             switch function                 ---------------------------------------------------         */
+function switchFunction(functionName, params, cb) {
+    let tag = Math.random.toString()
+    console.log("ready run " + tag + "function")
+    soap.createClient(url, function (err, client) {
+        if (err) {
+            console.log('createClient-err', err)
+        }
+        console.log("===================================================================、、、、、、、、、、、、、、、、、、、、、")
+         console.log("client",client)
+        switch (functionName) {
+            case ("getSupportCity"):
+                client.getSupportCity(params, function (err, result) {
+                    if (err) {
+                        console.log('getSupportCity-err', err);
+                    } else {
+                        //console.log("getSupportCity-result", result);
+                        Temp = result.getSupportCityResult.string
+                        console.log("Temp", Temp)
+                        writeFilex(Temp);
+                        if (pTimes == 34) {
+                            flag = true;
+                            Temp = []
+                        }
+                        cb(flag)
+                        return
+                    }
+                });;
+            case ("getWeather"):
+                client.getWeatherbyCityName(functionName, function (err, result) {
+                    if (err) {
+                        console.log('getWeatherbyCityName-err', err);
+                    } else {
+                        //console.log("getSupportCity-result", result);
+                        console.log(result.getWeatherResult.string)
+                        //console.log("Temp", Temp)
+                        await =>writeFilex(result.getWeatherResult.string[0]);
+                        await =>writeFilex(result.getWeatherResult.string[0]);
+                        cb(false)
+                        return
+                    }
+                });;
+            default:
+                console.error("Not support this fucking WebSerice function!");
+                cb(true, "Not support this fucking WebSerice function")
+                return
+        }
+
+
+
+    });
+}
+
+/**    ------------------------------------             do function                 ---------------------------------------------------         */
+/**    ------------------------------------             getWeatherby city                 ---------------------------------------------------         */
+function getWeatherbyCity(city) {
+    switchFunction("getWeather", city, function (err, msg) {
+        if (err) {
+            console.log("err" + err)
+            console.log(msg)
+            return
+        }
+        console.log("getWeather good")
+        return
+
+    });
+
+
+}
+/**    ------------------------------------             getWeatherby city                 ---------------------------------------------------         */
+
+
+
 /**    ------------------------------------             Test                 ---------------------------------------------------         */
 //测试webservice
 // const testHttp = require("./modules/vessel/soap_test");
@@ -107,11 +184,13 @@ function b() {
         }
     }
     testHttp(cb);
+    // getWeatherbyCity("深圳");
 }
 const pollOcr = function () {
     b();
 };
-timer = setInterval(pollOcr, 500);  ///time>500
+timer = setInterval(pollOcr, 500); ///time>500
+// timer = setTimeout(pollOcr, 500); ///time>500
 
 /**    ------------------------------------             Test                 ---------------------------------------------------         */
 module.exports = {
