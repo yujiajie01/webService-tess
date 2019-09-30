@@ -1,11 +1,11 @@
 # webService-tess
-   <p>  一个webservice 接口网站  have fun~  </p>
+   一个webservice接口网站                  have fun~  
    var url = 'http://www.webxml.com.cn/WebServices/WeatherWebService.asmx?wsdl'
 
 # init and start project
-   <p>cd 项目路径 webService-tess</p>  
-   <p>npm install</p>  
-   <p>node soap_test </p>       
+   cd 项目路径 webService-tess  
+   npm install  
+   node soap_test  
     
 
 # Translator 
