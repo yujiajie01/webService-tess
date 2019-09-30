@@ -1,0 +1,7 @@
+1、在.gitignore文件添加node_modules。避免后续误把node_modules提交到git仓库。
+
+2、按顺序执行以下命令：
+
+git rm -r --cached node_modules
+git commit -m '移除node_modules文件夹'
+git push origin master
