@@ -1,7 +1,7 @@
 {
   "name": "webservice-tess",
   "version": "1.0.0",
-  "description":"使用webservice实现一些小功能",
+  "description": "使用webservice实现一些小功能",
   "main": "soap_test.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -9,7 +9,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "async": "^3.1.0",
+    "single-line-log": "^1.1.2",
     "soap": "^0.29.0"
   }
-  
 }
