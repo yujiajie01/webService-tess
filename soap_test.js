@@ -2,6 +2,8 @@
 const soap = require('soap');
 const fs = require('fs');
 // 引入工具模块
+
+var transaction = require('./module/tansalater');
 var ProgressBar = require('./untils/progress_bar');
 var async = require('async');
 
@@ -260,6 +262,17 @@ function c() {
     getWeatherbyCity("深圳", cb);
 }
 
+function d() {
+    let cb = function (flag, record1) {
+
+        //console.log("======================停止===========================\n....\n...\n..\n.")
+
+    }
+
+    //testHttp(cb);
+    transaction.Translate( cb);
+}
+
 
 
 
@@ -272,7 +285,12 @@ const pollOcr = function () {
 const pollOcrx = function () {
     c();
 };
-timera = setInterval(pollOcr, 500); ///time>500
+const polltranslator = function () {
+    d();
+};
+
+
+// timera = setInterval(pollOcr, 500); ///time>500
 
 
 
@@ -306,7 +324,8 @@ function downloading() {
 }
 
 
-timerb = setTimeout(pollOcrx, 1); ///time>500
+// timerb = setTimeout(pollOcrx, 1); ///time>500
+setTimeout(polltranslator, 1)
 
 /**    ------------------------------------             Test                 ---------------------------------------------------         */
 module.exports = {
